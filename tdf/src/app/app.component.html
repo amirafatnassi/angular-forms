@@ -1,28 +1,71 @@
 <div class="container-fluid">
   <h1>Bootcamp enrollement form</h1>
   {{ userForm.value | json }}
-<hr>
-  {{userModel | json}}
+  <hr />
+  {{ userModel | json }}
 
   <form #userForm="ngForm">
     <div class="form-group">
       <label>Name</label>
-      <input type="text" class="form-control" name="username" [(ngModel)]="userModel.name" />
+      <input
+        type="text"
+        [class.is-invalid]="name.invalid && name.touched"
+        name="username"
+        class="form-control"
+        #name="ngModel"
+        required
+        [(ngModel)]="userModel.name"
+      />
+      <small [class.d-none]="name.valid || name.untouched" class="text-danger"
+        >Name is required</small
+      >
     </div>
     <div class="form-group">
       <label>E-mail</label>
-      <input type="email" class="form-control" name="email" [(ngModel)]="userModel.email" />
+      <input
+        type="email"
+        class="form-control"
+        name="email"
+        [(ngModel)]="userModel.email"
+      />
     </div>
     <div class="form-group">
       <label>Phone</label>
-      <input type="tel" class="form-control" name="phone" [(ngModel)]="userModel.phone" />
+      <input
+        type="tel"
+        #phone="ngModel"
+        pattern="^\d{10}$"
+        required
+        [class.is-invalid]="phone.invalid && phone.touched"
+        class="form-control"
+        name="phone"
+        [(ngModel)]="userModel.phone"
+      />
+      <small class="text-danger" [class.d-none]="phone.valid || phone.untouched"
+        >Phone number is required and must be at leaset 10 digits</small
+      >
+      <!-- <div *ngIf="phone.errors && (phone.invalid || phone.touched)">
+        <small class="text-danger" *ngIf="phone.errors.required">Phone number is required</small>
+        <small class="text-danger" *ngIf="phone.errors.pattern">Phone number must be at leaset 10 digits</small>
+      </div>-->
     </div>
     <div class="form-group mt-3">
-      <select class="form-select" name="topic" [(ngModel)]="userModel.topic">
-        <option selected>I am interested in</option>
+      <select
+        #topic="ngModel"
+        (blur)="validateTopic(topic.value)"
+        (change)="validateTopic(topic.value)"
+        class="form-select"
+        name="topic"
+        [(ngModel)]="userModel.topic"
+        [class.is-invalid]="topicHasError && topic.touched"
+      >
+        <option value="default" selected>I am interested in</option>
         <option *ngFor="let topic of topics">{{ topic }}</option>
       </select>
-    </div>
+      <small class="text-danger"
+      [class.d-none]="!topicHasError || topic.untouched"
+      >Please choose a topic</small>
+    </div> 
     <div class="mb-3">
       <label>Time preference</label>
       <div class="form-check">
@@ -53,15 +96,15 @@
       </div>
       <div class="form-group">
         <label>City</label>
-        <input type="text" class="form-control" name="city" ngModel>
+        <input type="text" class="form-control" name="city" ngModel />
       </div>
       <div class="form-group">
         <label>State</label>
-        <input type="text" class="form-control" name="state" ngModel>
+        <input type="text" class="form-control" name="state" ngModel />
       </div>
       <div class="form-group">
         <label for="">postal code</label>
-        <input type="text" class="form-control" name="postalcode" ngModel>
+        <input type="text" class="form-control" name="postalcode" ngModel />
       </div>
     </div>
     <div class="form-check mb-3">
